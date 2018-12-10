@@ -1,68 +1,57 @@
-const { GraphQLServer } = require('graphql-yoga');
+const { GraphQLServer } = require('graphql-yoga')
+const { Prisma } = require('prisma-binding')
 
-let links = [
-    {
-        id: 'link-0',
-        url: 'www.fullstackhour.com',
-        description: 'Fullstak web app with React, Node,Prisma and GraphQL'
-    },
-    {
-        id: 'link-1',
-        url: 'www.fullstackhour.com',
-        description: 'GraphQL advanced Course'
-    },
-    {
-        id: 'link-2',
-        url: 'www.fullstackhour.com',
-        description: 'PassportJs course'
-    },
-    {
-        id: 'link-3',
-        url: 'www.fullstackhour.com',
-        description: 'NodeJs course'
-    }
-];
-let idCount = links.length;
 const resolvers = {
-    Query: {
-        info: () => 'Hello GraphQL devs !!',
-        feed: () => links,
-        getLink: (root, { id }) => links.find(link => link.id === id)
-
+  Query: {
+    feed(parent, args, ctx, info) {
+      return ctx.db.query.posts({ where: { isPublished: true } }, info)
     },
-    Mutation: {
-        post(root, { url, description }) {
-            const link = {
-                id: `link-${idCount++}`,
-                url,
-                description
-            };
-            links.push(link);
-            return link;
-        },
-        //updateLink
-        updateLink(root, { id, description, url }) {
-            const index = links.findIndex(link => link.id === id);
-            if (url) {
-                links[index].url = url
-            }
-            if (description) {
-                links[index].description = description
-            }
-            return links[index];
-        },
-        //deleteLink
-        deleteLink(root, { id }) {
-            const index = links.findIndex(link => link.id === id);
-            links.splice(index, 1);
-            return links[index];
-        }
+    drafts(parent, args, ctx, info) {
+      return ctx.db.query.posts({ where: { isPublished: false } }, info)
     },
-
+    post(parent, { id }, ctx, info) {
+      return ctx.db.query.post({ where: { id } }, info)
+    },
+  },
+  Mutation: {
+    createDraft(parent, { title, text }, ctx, info) {
+      return ctx.db.mutation.createPost(
+        {
+          data: {
+            title,
+            text,
+          },
+        },
+        info,
+      )
+    },
+    deletePost(parent, { id }, ctx, info) {
+      return ctx.db.mutation.deletePost({ where: { id } }, info)
+    },
+    publish(parent, { id }, ctx, info) {
+      return ctx.db.mutation.updatePost(
+        {
+          where: { id },
+          data: { isPublished: true },
+        },
+        info,
+      )
+    },
+  },
 }
 
 const server = new GraphQLServer({
-    typeDefs: './src/schema.graphql',
-    resolvers
-});
-server.start(() => console.log('server is running at localhost:4000'));
+  typeDefs: './src/schema.graphql',
+  resolvers,
+  context: req => ({
+    ...req,
+    db: new Prisma({
+      typeDefs: 'src/generated/prisma.graphql', // the auto-generated GraphQL schema of the Prisma API
+      endpoint: 'https://us1.prisma.sh/haider-malik-c1556d/hackernews-clone/dev', // the endpoint of the Prisma API
+      debug: true, // log all GraphQL queries & mutations sent to the Prisma API
+      // secret: 'mysecret123', // only needed if specified in `database/prisma.yml`
+    }),
+  }),
+})
+
+server.start(() => console.log('Server is running on http://localhost:4000'))

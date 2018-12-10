@@ -1,13 +1,13 @@
+# import Post from "./generated/prisma.graphql"
+
 type Query {
- info: String!
- feed : [Link!]!
- getLink(id: ID!): Link
+  feed: [Post!]!
+  drafts: [Post!]!
+  post(id: ID!): Post
 }
-type Link {
-    id: ID!
-    url : String!
-    description: String!
-}
+
 type Mutation {
-    post(url: String!, description: String!) : Link!
+  createDraft(title: String!, text: String): Post
+  deletePost(id: ID!): Post
+  publish(id: ID!): Post
 }
