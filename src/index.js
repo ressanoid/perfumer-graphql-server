@@ -1,21 +1,63 @@
 const { GraphQLServer } = require('graphql-yoga');
 
-//add root field greet inside the Query
-//the return type of greet should be non nullable String
+let links = [
+    {
+        id: 'link-0',
+        url: 'www.fullstackhour.com',
+        description: 'Fullstak web app with React, Node,Prisma and GraphQL'
+    },
+    {
+        id: 'link-1',
+        url: 'www.fullstackhour.com',
+        description: 'GraphQL advanced Course'
+    },
+    {
+        id: 'link-2',
+        url: 'www.fullstackhour.com',
+        description: 'PassportJs course'
+    },
+    {
+        id: 'link-3',
+        url: 'www.fullstackhour.com',
+        description: 'NodeJs course'
+    }
+];
+
 const typeDefs = `
 type Query {
  info: String!
- greet: String!
+ feed : [Link!]!
+ getLink(id: ID!): Link
+}
+type Link {
+    id: ID!
+    url : String!
+    description: String!
 }
 `;
 
 const resolvers = {
     Query: {
-        info: () => 'Hello GraphQL devs!',
-        greet: () => 'hello world'
-        // create a resolver for greet field
-        //return the message hello world from the greet resolver
+        info: () => 'Hello GraphQL devs !!',
+        feed: () => links, //first execution
+        getLink: (root, { id }) => {
+            return links.find(link => link.id === id);
+        }
+
+    },
+    Link: {
+        id(root) {
+            console.log(root)
+            return root.id;
+        },
+        url(root) {
+            return root.url
+        },
+        description(root) {
+            return root.description
+        }
     }
+
 }
 
 const server = new GraphQLServer({
