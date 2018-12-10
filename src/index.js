@@ -39,20 +39,25 @@ const resolvers = {
             };
             links.push(link);
             return link;
+        },
+        //updateLink
+        updateLink(root, { id, description, url }) {
+            const index = links.findIndex(link => link.id === id);
+            if (url) {
+                links[index].url = url
+            }
+            if (description) {
+                links[index].description = description
+            }
+            return links[index];
+        },
+        //deleteLink
+        deleteLink(root, { id }) {
+            const index = links.findIndex(link => link.id === id);
+            links.splice(index, 1);
+            return links[index];
         }
     },
-    Link: {
-        id(root) {
-            console.log(root)
-            return root.id;
-        },
-        url(root) {
-            return root.url
-        },
-        description(root) {
-            return root.description
-        }
-    }
 
 }
 
