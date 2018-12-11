@@ -1,6 +1,6 @@
 # The endpoint of your Prisma API (deployed to a Prisma Sandbox).
 #endpoint: ''
-endpoint: https://us1.prisma.sh/haider-malik-c1556d/hackernews-clone/dev
+endpoint: https://eu1.prisma.sh/nasser-alsaeed/PerfumesDB/initial?headers={"Authorization":"Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE1NDQ1NTk1NDAsIm5iZiI6MTU0NDQ3MzE0MH0.vwXZ0cpWKVGbH6f1b9BsQOC9aw0jwzkrbdlsVniICz0"}
 
 # The file containing the definition of your data model.
 datamodel: datamodel.graphql
