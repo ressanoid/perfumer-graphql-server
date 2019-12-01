@@ -1,0 +1,156 @@
+
+type ParentCompany {
+ id:ID! @id
+  name:String
+  mainActivity:String
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Country {
+  id:ID! @id
+  name:String
+  code:String @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+
+type Designer {
+ id:ID! @id
+  name:String
+  country:Country
+  websiteUrl:String
+  parentCompany:ParentCompany
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+
+type Accord {
+id:ID! @id
+name:String @unique
+imageUrl:String
+createdAt: DateTime! @createdAt
+updatedAt: DateTime! @updatedAt
+
+}
+
+
+type Sillage {
+id:ID! @id
+perfume:Perfume
+device:Device
+rating:SilageRating
+calculatedRating:Float
+createdAt: DateTime! @createdAt
+updatedAt: DateTime! @updatedAt
+}
+
+
+type Longevity {
+  id:ID! @id
+  perfume:Perfume
+  device:Device
+  rating:LongevityRating
+  calculatedRating:Float
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+
+type Comment {
+  id:ID! @id
+  device:Device
+  perfume:Perfume
+  upvote:Int
+  downvote:Int
+  user:User
+  comment:String
+  approved:Boolean
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type User{
+  id:ID! @id
+  username:String @unique
+  password:String
+  email:String @unique
+  mobile:String
+  userHavePerfumes: [Perfume] @relation(name: "Users_have")
+  userLike: [Perfume] @relation(name: "Users_Liked")
+  userDilike: [Perfume] @relation(name: "Users_Dislike")
+  userSummer: [Perfume] @relation(name: "Users_Summer")
+  userFall: [Perfume] @relation(name: "Users_Fall")
+  userWinter: [Perfume] @relation(name: "Users_Winter")
+  userSpring: [Perfume] @relation(name: "Users_Spring")
+  userDaily: [Perfume] @relation(name: "Users_Daily")
+  userSpecial: [Perfume] @relation(name: "Users_Special")
+  userNight: [Perfume] @relation(name: "Users_night")
+  userFavorite: [Perfume] @relation(name: "Users_favorite")
+  suggestedPerfumes: [Perfume] @relation(name: "User_Perfume_Suggestion")
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  comments: [Comment]
+}
+
+
+type Device {
+  id:ID! @id
+  name:String
+  type :String
+  imei:String
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+
+type Perfume {
+  id:ID! @id
+  barcode:String
+  name:String
+  designer:Designer
+  year:Int
+  accords:[Accord]
+  price:Float
+  image:String
+  perfumeGender:Gender
+  description:String
+  comments:[Comment]
+  viewcount:Int
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+  like:[User] @relation(name: "Users_Liked")
+  dilike:[User] @relation(name: "Users_Dislike")
+  summer:[User] @relation(name: "Users_Summer")
+  fall:[User] @relation(name: "Users_Fall")
+  winter:[User] @relation(name: "Users_Winter")
+  spring:[User] @relation(name: "Users_Spring")
+  daily:[User] @relation(name: "Users_Daily")
+  special:[User] @relation(name: "Users_Special")
+  night:[User] @relation(name: "Users_night")
+  have:[User] @relation(name: "Users_have")
+  favorite:[User] @relation(name: "Users_favorite")
+  suggestedPerfumeForUsers: [User] @relation(name: "User_Perfume_Suggestion")
+}
+
+enum Gender {
+MALE
+FEMALE
+UNISEX
+}
+
+enum SilageRating {
+Soft
+Moderate
+Heavey
+Enormous
+}
+
+enum LongevityRating {
+Poor
+Weak
+Moderate
+Longlasting
+VeryLongLasting
+}
